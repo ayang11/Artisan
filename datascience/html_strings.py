@@ -55,5 +55,26 @@ HOME_HTML = '''
 
 </body>
 </html>
-
 '''
+
+def add_charting_buttons(title):
+    return '''
+    <h1>%s</h1>
+    <form method="POST" action="create_chart">
+        <div class="charting">
+            <label for="Filtering" {%% if error_filtering %%}style="color: red; font-weight: bold;"{%% endif %%}><a href="/filtering_options">Filtering:</a></label>
+            <input type="text" id="filtering" name="filtering" value="{{ filtering }}">
+            
+            <label for="Filter" {%% if error_filter_value %%}style="color: red; font-weight: bold;"{%% endif %%}><a href="/filter_options">Filter:</a></label>
+            <input type="text" id="filter_value" name="filter_value" value="{{ filter_value }}">
+            
+            <label for="Grouping" {%% if error_grouping %%}style="color: red; font-weight: bold;"{%% endif %%}><a href="/grouping_options">Grouping:</a></label>
+            <input type="text" id="grouping" name="grouping" value="{{ grouping }}">
+            
+            <label for="Value" {%% if error_value %%}style="color: red; font-weight: bold;"{%% endif %%}><a href="/chart_options">Chart:</a></label>
+            <input type="text" id="value" name="value" value="{{ value }}">
+            
+             <button type="submit">Chart</button>
+        </div>
+    </form>
+    '''%title

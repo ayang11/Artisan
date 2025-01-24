@@ -1,7 +1,9 @@
+from collections import defaultdict
 import datetime
 import inspect
-from pandas import notnull, isnull, to_datetime
-from collections import defaultdict
+import os
+
+from pandas import notnull, isnull, to_datetime, read_excel, Series
 
 def to_dateprint(date, timestamp=False):
     if isnull(date): return ''
@@ -42,3 +44,39 @@ class memoize(object):
                 return self.MEMOIZE_CACHE[name][key][0]
     
             return memoized_func
+        
+def artisan_folder(*args):
+    return os.path.join('C:\\','users','yanga','desktop','artisan',*args)
+
+def _read_file(section = 'Europe Economy', old=False):
+    if old:
+        if section == 'Europe Economy':
+            filename=artisan_folder('Intra-Europe LCC and Network Carriers 3 days - Truncated.xlsx')
+        elif section in ('Intercontinental Economy','Intercontinental Business'):
+            filename=artisan_folder('Inter-Continental Network Airlines 3 days - Truncated.xlsx')
+    else:
+        if section == 'Europe Economy':
+            filename=artisan_folder('Intra-Europe LCC and Network Carriers 60 days - Truncated.xlsx')
+        elif section in ('Intercontinental Economy','Intercontinental Business'):
+            filename=artisan_folder('Inter-Continental Network Airlines 60 days - Truncated.xlsx')
+        
+    dm = read_excel(filename, sheet_name=section)
+    dm = dm[notnull(dm['Airline Name'])]
+    return dm
+
+@memoize
+def read_file(section = 'Europe Economy', combine=True):
+    if combine:
+        a = _read_file(section, old=False)
+        b = _read_file(section, old=True)
+        return a.merge(b, on=('Airline Code','Origin Code','Destination Code'), suffixes=('','_old'))
+    else:
+        return _read_file(section, old=False)
+
+def origins_list(section):return dict(Series(read_file(section)['Origin Name'].values,read_file(section)['Origin Code'].values).dropna().items())
+def destinations_list(section): return dict(Series(read_file(section)['Destination Name'].values,read_file(section)['Destination Code'].values).dropna().items())
+def airports_list(section):
+    a = origins_list(section)
+    a.update(destinations_list(section))
+    return a
+def airlines_list(section): return dict(Series(read_file(section)['Airline Name'].values,read_file(section)['Airline Code'].values).dropna().items())
