@@ -31,7 +31,7 @@ def read_airlines():
     return pandas.concat(output).sort_values(by=['Source','Endpoint','Frequency','Args','Year','Number'])
 
 def read_dbdig_top5():
-    filename = 'dbDIG_Top5_ContainerCompaniesTracker_2025_01_23.xlsx'
+    filename = 'dbDIG_Top5_ContainerCompaniesTracker_2025_02_13.xlsx'
     dm = pandas.read_excel(artisan_folder(filename), sheet_name=None)
     output = list()
     
@@ -62,7 +62,7 @@ def read_dbdig_top5():
     return pandas.concat(output).sort_values(by=['Source','Endpoint','Frequency','Args','Year','Number'])
 
 def read_dbdig_containerthroughput():
-    filename = 'dbDIG_ContainerThroughputIndex_Report_2025_01_23.xlsx'
+    filename = 'dbDIG_ContainerThroughputIndex_Report_2025_02_13.xlsx'
     dm = pandas.read_excel(artisan_folder(filename), sheet_name=None)
     output = list()
     
@@ -119,12 +119,12 @@ def read_dbdig_congestion(filename):
     return pandas.concat(output).sort_values(by=['Source','Endpoint','Frequency','Args','Year','Number'])
 
 def read_dbdig_congestion_global():
-    return read_dbdig_congestion('dbDIG_Congestion_Global_2025_01_23.xlsx')
+    return read_dbdig_congestion('dbDIG_Congestion_Global_2025_02_13.xlsx')
 def read_dbdig_congestion_la():
-    return read_dbdig_congestion('dbDIG_Cogestion_LosAngeles_LongBeach_2025_01_23.xlsx')
+    return read_dbdig_congestion('dbDIG_Cogestion_LosAngeles_LongBeach_2025_02_13.xlsx')
 
 def read_dbdig_chems():
-    filename = 'dbDIG_Chems_2025_01_23.xlsx'
+    filename = 'dbDIG_Chems_2025_02_13.xlsx'
     dm = pandas.read_excel(artisan_folder(filename), sheet_name=None)
     output = list()
 
