@@ -18,10 +18,20 @@ weekly['Quarter'] = pandas.PeriodIndex(dates, freq='Q')
 del weekly['Year']
 del weekly['Number']
 output = list()
-for arg, func in [('Sum',grouping.DataFrameGroupBy.sum),('Min',grouping.DataFrameGroupBy.min),('Max',grouping.DataFrameGroupBy.max),('Median',grouping.DataFrameGroupBy.median),('Mean',grouping.DataFrameGroupBy.mean)]:
+for arg, func in [('Sum',grouping.DataFrameGroupBy.sum),('Min',grouping.DataFrameGroupBy.min),('Max',grouping.DataFrameGroupBy.max),('Median',grouping.DataFrameGroupBy.median),('Mean',grouping.DataFrameGroupBy.mean),]:
     agg = func(weekly.groupby(['Frequency','Source','Endpoint','Args','Quarter'])).reset_index()
     agg['Args'] = f'{arg}('+agg['Args']+')'
     output.append(agg)
+
+first = weekly.groupby(['Frequency','Source','Endpoint','Args','Quarter']).first().reset_index().rename(columns = {'Value':'First'})
+last = weekly.groupby(['Frequency','Source','Endpoint','Args','Quarter']).last().reset_index().rename(columns = {'Value':'Last'})
+agg = first.merge(last, on = ('Frequency','Source','Endpoint','Args','Quarter'), how='inner')
+agg['Args'] = 'Trend('+agg['Args']+')'
+agg['Value'] = agg['Last'] - agg['First']
+del agg['Last']
+del agg['First']
+output.append(agg)
+
 weeklyagg = pandas.concat(output)
 weeklyagg['Number'] = weeklyagg['Quarter'].dt.quarter
 weeklyagg['Year'] = weeklyagg['Quarter'].dt.year
@@ -37,10 +47,20 @@ monthly['Quarter'] = pandas.PeriodIndex(dates, freq='Q')
 del monthly['Year']
 del monthly['Number']
 output = list()
-for arg, func in [('Sum',grouping.DataFrameGroupBy.sum),('Min',grouping.DataFrameGroupBy.min),('Max',grouping.DataFrameGroupBy.max),('Median',grouping.DataFrameGroupBy.median),('Mean',grouping.DataFrameGroupBy.mean)]:
+for arg, func in [('Sum',grouping.DataFrameGroupBy.sum),('Min',grouping.DataFrameGroupBy.min),('Max',grouping.DataFrameGroupBy.max),('Median',grouping.DataFrameGroupBy.median),('Mean',grouping.DataFrameGroupBy.mean),('First',grouping.DataFrameGroupBy.first),('Last',grouping.DataFrameGroupBy.last),]:
     agg = func(monthly.groupby(['Frequency','Source','Endpoint','Args','Quarter'])).reset_index()
     agg['Args'] = f'{arg}('+agg['Args']+')'
     output.append(agg)
+    
+first = monthly.groupby(['Frequency','Source','Endpoint','Args','Quarter']).first().reset_index().rename(columns = {'Value':'First'})
+last = monthly.groupby(['Frequency','Source','Endpoint','Args','Quarter']).last().reset_index().rename(columns = {'Value':'Last'})
+agg = first.merge(last, on = ('Frequency','Source','Endpoint','Args','Quarter'), how='inner')
+agg['Args'] = 'Trend('+agg['Args']+')'
+agg['Value'] = agg['Last'] - agg['First']
+del agg['Last']
+del agg['First']
+output.append(agg)
+    
 monthlyagg = pandas.concat(output)
 monthlyagg['Number'] = monthlyagg['Quarter'].dt.quarter
 monthlyagg['Year'] = monthlyagg['Quarter'].dt.year
@@ -56,10 +76,20 @@ daily['Quarter'] = pandas.PeriodIndex(dates, freq='Q')
 del daily['Year']
 del daily['Number']
 output = list()
-for arg, func in [('Sum',grouping.DataFrameGroupBy.sum),('Min',grouping.DataFrameGroupBy.min),('Max',grouping.DataFrameGroupBy.max),('Median',grouping.DataFrameGroupBy.median),('Mean',grouping.DataFrameGroupBy.mean)]:
+for arg, func in [('Sum',grouping.DataFrameGroupBy.sum),('Min',grouping.DataFrameGroupBy.min),('Max',grouping.DataFrameGroupBy.max),('Median',grouping.DataFrameGroupBy.median),('Mean',grouping.DataFrameGroupBy.mean),('First',grouping.DataFrameGroupBy.first),('Last',grouping.DataFrameGroupBy.last),]:
     agg = func(daily.groupby(['Frequency','Source','Endpoint','Args','Quarter'])).reset_index()
     agg['Args'] = f'{arg}('+agg['Args']+')'
     output.append(agg)
+    
+first = daily.groupby(['Frequency','Source','Endpoint','Args','Quarter']).first().reset_index().rename(columns = {'Value':'First'})
+last = daily.groupby(['Frequency','Source','Endpoint','Args','Quarter']).last().reset_index().rename(columns = {'Value':'Last'})
+agg = first.merge(last, on = ('Frequency','Source','Endpoint','Args','Quarter'), how='inner')
+agg['Args'] = 'Trend('+agg['Args']+')'
+agg['Value'] = agg['Last'] - agg['First']
+del agg['Last']
+del agg['First']
+output.append(agg)
+    
 dailyagg = pandas.concat(output)
 dailyagg['Number'] = dailyagg['Quarter'].dt.quarter
 dailyagg['Year'] = dailyagg['Quarter'].dt.year
